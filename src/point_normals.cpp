@@ -29,9 +29,6 @@ int main(int argc, char** argv)
     // ne.compute(*cloud_normals);
 
     // // cloud_normals->points.size () should have the same size as the input cloud->points.size ()
-    #include <iostream>
-#include <pcl/io/pcd_io.h>
-#include <pcl/point_types.h>
 
   if (argc != 2)
   {
@@ -106,6 +103,6 @@ int main(int argc, char** argv)
         p_n_cloud_c.points[i].x << " " << p_n_cloud_c.points[i].y << " " << p_n_cloud_c.points[i].z << " " <<
         p_n_cloud_c.points[i].normal[0] << " " << p_n_cloud_c.points[i].normal[1] << " " << p_n_cloud_c.points[i].normal[2] << std::endl;
   }
-  return (0);
+  return (1);
 
 }
