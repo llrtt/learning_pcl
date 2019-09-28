@@ -65,8 +65,8 @@ int main()
     point_cloud_ptr->points.push_back(point);
     if (z < 0.0)
     {
-      r -= 12;
-      g += 12;
+      r -= 2;
+      g += 10;
     }
     else
     {
@@ -92,14 +92,14 @@ int main()
   while (!viewer->wasStopped())
   {
     point_cloud_ptr->clear();
-    w+=0.1;
+    w+=0.01;
     if (w >= 3.141592 * 2)
     {
-      w = 0.1;
+      w = 0.01;
     }
-    uint8_t r(255), g(15), b(15);
+    uint8_t r(255), g(105), b(150);
     float i = 0;
-    for (float z = -10; z <= 10; z += 0.01)
+    for (float z = -5; z <= 5; z += 0.009)
     {
       i++;
       pcl::PointXYZ basic_point;
@@ -116,17 +116,18 @@ int main()
                       static_cast<uint32_t>(g) << 8 | static_cast<uint32_t>(b));
       point.rgb = *reinterpret_cast<float *>(&rgb);
       point_cloud_ptr->points.push_back(point);
-      if (z < 0.0)
-      {
-        r -= 12;
-        g += 12;
-      }
-      else
-      {
-        g -= 12;
-        b += 12;
-      }
+     if (z < 0.0)
+    {
+      r -= 1;
+      g += 1;
     }
+    else
+    {
+      g -= 1;
+      b += 1;
+    }
+    }
+      
     pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> rgb(point_cloud_ptr);
     viewer->updatePointCloud<pcl::PointXYZRGB>(point_cloud_ptr, rgb, "sample cloud");
     viewer->spinOnce(100);
