@@ -1,7 +1,5 @@
 #include <pcl/visualization/cloud_viewer.h>
 #include <iostream>
-#include <thread>
-
 #include <pcl/common/common_headers.h>
 #include <pcl/features/normal_3d.h>
 #include <pcl/io/pcd_io.h>
@@ -15,7 +13,7 @@ int main()
   pcl::PointCloud<pcl::PointXYZ>::Ptr basic_cloud_ptr(new pcl::PointCloud<pcl::PointXYZ>);
 
   uint8_t r(255), g(15), b(15);
-  for (float z(-1.0); z <= 1.0; z += 0.05)
+  for (float z(-1.0); z <= 4.0; z += 0.01)
   {
     for (float angle(0.0); angle <= 360.0; angle += 5.0)
     {
