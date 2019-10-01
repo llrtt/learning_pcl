@@ -10,7 +10,9 @@
 #include <pcl/segmentation/region_growing.h>
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/filters/voxel_grid.h>
+#include <pcl/segmentation/region_growing_rgb.h>
 #include <pcl/surface/mls.h>
+#include <pcl/filters/extract_indices.h>
 
 int main(int argc, char **argv)
 {
@@ -22,15 +24,21 @@ int main(int argc, char **argv)
     return (-1);
   }
   pcl::StatisticalOutlierRemoval<pcl::PointXYZRGB> sor;
-  sor.setInputCloud (cloud);
-  sor.setMeanK (50);
-  sor.setStddevMulThresh (1.0);
-  sor.filter (*cloud);
+  sor.setInputCloud(cloud);
+  sor.setMeanK(50);
+  sor.setStddevMulThresh(1.0);
+  sor.filter(*cloud);
 
   pcl::VoxelGrid<pcl::PointXYZRGB> v;
   v.setInputCloud(cloud);
   v.setLeafSize(0.006f, 0.006f, 0.006f);
   v.filter(*cloud);
+
+  pcl::PassThrough<pcl::PointXYZRGB> pass;
+  pass.setInputCloud(cloud);
+  pass.setFilterFieldName("y");
+  pass.setFilterLimits(-10, 0.0);
+  pass.filter(*cloud);
 
   pcl::NormalEstimation<pcl::PointXYZRGB, pcl::Normal> ne;
   ne.setInputCloud(cloud);
@@ -43,13 +51,33 @@ int main(int argc, char **argv)
   ne.setRadiusSearch(0.1);
   ne.compute(*cloud_normals);
 
+  pcl::RegionGrowingRGB<pcl::PointXYZRGB> reg;
+  reg.setInputCloud(cloud);
+  reg.setSearchMethod(tree);
+  reg.setDistanceThreshold(5);
+  reg.setPointColorThreshold(6);
+  reg.setRegionColorThreshold(5);
+  reg.setMinClusterSize(100);
+  std::vector<pcl::PointIndices> clusters;
+  reg.extract(clusters);
+  pcl::PointCloud<pcl::PointXYZRGB>::Ptr colored_cloud = reg.getColoredCloud();
+
+  pcl::PointIndices::Ptr inliers (new pcl::PointIndices ());
+  *inliers = clusters[1];
+  pcl::ExtractIndices<pcl::PointXYZRGB> extract;
+  extract.setInputCloud(cloud);
+  extract.setIndices(inliers);
+  extract.setNegative(false);
+  extract.filter(*cloud);
+
   pcl::visualization::PCLVisualizer viewer;
   viewer.addPointCloud(cloud, "cloud");
   viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3);
-  viewer.addPointCloudNormals<pcl::PointXYZRGB, pcl::Normal>(cloud, cloud_normals, 10, 0.005, "normals");
+  // viewer.addPointCloudNormals<pcl::PointXYZRGB, pcl::Normal>(cloud, cloud_normals, 10, 0.005, "normals");
   viewer.addCoordinateSystem(0.2);
   viewer.initCameraParameters();
-  while(!viewer.wasStopped())
+  std::cout << clusters[0];
+  while (!viewer.wasStopped())
   {
     viewer.spinOnce(100);
   }
