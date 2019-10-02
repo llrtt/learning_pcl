@@ -23,18 +23,18 @@ int main(int argc, char **argv)
     std::cout << "Cloud reading failed." << std::endl;
     return (-1);
   }
-  pcl::StatisticalOutlierRemoval<pcl::PointXYZRGB> sor;
+  pcl::StatisticalOutlierRemoval<pcl::PointXYZRGB> sor;//去掉离群点//
   sor.setInputCloud(cloud);
   sor.setMeanK(50);
   sor.setStddevMulThresh(1.0);
   sor.filter(*cloud);
 
-  pcl::VoxelGrid<pcl::PointXYZRGB> v;
+  pcl::VoxelGrid<pcl::PointXYZRGB> v;//向下取样//
   v.setInputCloud(cloud);
   v.setLeafSize(0.006f, 0.006f, 0.006f);
   v.filter(*cloud);
 
-  pcl::PassThrough<pcl::PointXYZRGB> pass;
+  pcl::PassThrough<pcl::PointXYZRGB> pass;//取出y轴在0到-10的体素//
   pass.setInputCloud(cloud);
   pass.setFilterFieldName("y");
   pass.setFilterLimits(-10, 0.0);
@@ -51,7 +51,7 @@ int main(int argc, char **argv)
   ne.setRadiusSearch(0.1);
   ne.compute(*cloud_normals);
 
-  pcl::RegionGrowingRGB<pcl::PointXYZRGB> reg;
+  pcl::RegionGrowingRGB<pcl::PointXYZRGB> reg;//根据颜色聚类//
   reg.setInputCloud(cloud);
   reg.setSearchMethod(tree);
   reg.setDistanceThreshold(5);
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
   reg.extract(clusters);
   pcl::PointCloud<pcl::PointXYZRGB>::Ptr colored_cloud = reg.getColoredCloud();
 
-  pcl::PointIndices::Ptr inliers (new pcl::PointIndices ());
+  pcl::PointIndices::Ptr inliers (new pcl::PointIndices ());//取出索引中的点群//
   *inliers = clusters[1];
   pcl::ExtractIndices<pcl::PointXYZRGB> extract;
   extract.setInputCloud(cloud);
