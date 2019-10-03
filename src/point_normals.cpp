@@ -13,17 +13,28 @@
 #include <pcl/filters/extract_indices.h>
 #include <pcl/segmentation/extract_clusters.h>
 #include <pcl/console/time.h>
+#include <string>
 
 void mam(pcl::PointCloud<pcl::PointXYZRGB>::Ptr, float *); //找出每个点群上下边界点坐标//
 
 int main(int argc, char **argv)
 {
+  std::string string0;
+  if(argv[1] == NULL)
+  {
+    string0 = "/home/joker/Desktop/point_cloud/2.pcd";
+  }
+  else
+  {
+    string0 = argv[1];
+  }
+  
   pcl::console::TicToc tt;
   tt.tic();
   pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>);
   pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud1(new pcl::PointCloud<pcl::PointXYZRGB>);
   pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_filtered(new pcl::PointCloud<pcl::PointXYZRGB>);
-  if (pcl::io::loadPCDFile<pcl::PointXYZRGB>("/home/joker/Desktop/point_cloud/2.pcd", *cloud) == -1)
+  if (pcl::io::loadPCDFile<pcl::PointXYZRGB>(string0, *cloud) == -1)
   {
     std::cout << "Cloud reading failed." << std::endl;
     return (-1);
