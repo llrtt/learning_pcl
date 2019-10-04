@@ -86,7 +86,7 @@ int main()
   viewer->addPointCloud<pcl::PointXYZRGB>(point_cloud_ptr, rgb, "sample cloud");
   viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample cloud");
   viewer->addCoordinateSystem(1.0);
-  viewer->initCameraParameters();
+  viewer->initCameraParameters();//aa
 
   float w = 0.1;
   while (!viewer->wasStopped())
